@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 """
 Generic MQTT meters
-@Author: Johan Hardy
+Author: Johan Hardy
+Email: hardy.johan@gmail.com
 """
 import sys
+import mqtt.client
 
 
 def main():

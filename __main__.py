@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Generic MQTT meters
+Generic MQTT meter for Water, gaz and electricity.
 Author: Johan Hardy
 Email: hardy.johan@gmail.com
 """
 import sys
-import mqtt.client
+import paho.mqtt.client as mqtt
 
 
 def main():

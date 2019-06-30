@@ -86,7 +86,7 @@ def monitor_gauges():
             else:
                 GAUGE_FAULT[level] = 0
         # Update health of gauges
-        if GAUGE_FAULT[level] == 0:
-            set_gauge_healthy(level)
-        elif GAUGE_FAULT[level] >= WATER_TANK_GAUGE_FAULT_TOLERANCE:
+        if GAUGE_FAULT[level] >= WATER_TANK_GAUGE_FAULT_TOLERANCE:
             set_gauge_unhealthy(level)
+        else:
+            set_gauge_healthy(level)

@@ -6,8 +6,8 @@ Author: Johan Hardy
 Email: hardy.johan@gmail.com
 """
 import sys
-import sensors.water.meter
-import sensors.water.tank
+import water.meter
+import water.tank
 import paho.mqtt.client as mqtt
 
 

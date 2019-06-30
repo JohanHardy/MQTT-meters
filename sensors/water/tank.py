@@ -1,57 +1,92 @@
 #!/usr/bin/env python
+"""
+Water tank level meter implementing fault detection algorithm.
+The script reads 10 Raspberry Pi GPIOs corresponding each to 10% level of the
+tank. Each gauge has a health status and a fault counter. In case the algoritm
+detects WATER_TANK_GAUGE_FAULT_TOLERANCE faults for a gauge, the gauge is
+considered unhealthy. The function monitor_gauges() must be called before
+get_level().
+Author: Johan Hardy
+Email: hardy.johan@gmail.com
+"""
 import RPi.GPIO as GPIO
 
-# Table mapping the water gauge and GPIOs (10 levels for 100%)
-gauges = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-# Water gauge health (Healthy = True, Unhealthy = False)
-gauges_health = [True, True, True, True, True, True, True, True, True]
-
-# Water gauge state (GPIO.HIGH = water, GPIO.LOW = no water)
-gauges_state = [GPIO.LOW, GPIO.LOW, GPIO.LOW, GPIO.LOW, GPIO.LOW, GPIO.LOW, GPIO.LOW, GPIO.LOW, GPIO.LOW]
-
-
-def set_gauge_unheahlthy(level):
-    gauges_health[level] = False
+# Table mapping the water gauges (10 GPIOS = 10 levels = 100%)
+GAUGE = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]  # GPIO IDs are TBD
+# Water gauge health status (Healthy = True, Unhealthy = False)
+GAUGE_HEALTH = [True]*10
+# Water gauge state (GPIO.HIGH = water presence, GPIO.LOW = no water presence)
+GAUGE_STATE = [GPIO.LOW]*10
+# Water gauge fault counter
+GAUGE_FAULT = [0]*10
+# Fault dectection filter
+WATER_TANK_GAUGE_FAULT_TOLERANCE = 3
 
 
-def set_gauge_heahlthy(level):
-    gauges_health[level] = True
+def set_gauge_unhealthy(level):
+    ''' Set a gauge unhealthy '''
+    GAUGE_HEALTH[level] = False
 
 
-def get_gauge_health(level):
-    return gauges_health[level]
+def set_gauge_healthy(level):
+    ''' Set a gauge healthy '''
+    GAUGE_HEALTH[level] = True
 
 
-def is_gauge_health(level):
-    return bool(gauges_health[level] is True)
+def is_gauge_healthy(level):
+    ''' Check whether a gauge is healthy or not '''
+    return bool(GAUGE_HEALTH[level] is True)
+
+
+def get_gauges_health():
+    ''' Get all gauge health '''
+    return GAUGE_HEALTH
 
 
 def sample(level):
-    # returns GPIO.LOW or GPIO.HIGH at the gauge level.
-    return GPIO.input(gauges[level])
+    ''' Read GPIO (i.e. whether the water reached level of gauge). GPIO.LOW or
+    GPIO.HIGH at the gauge level '''
+    return GPIO.input(GAUGE[level])
 
 
 def setup():
-    # Setup GPIO port and clean up
+    ''' Setup Raspberry Pi and its GPIOs for each gauge '''
     GPIO.cleanup()
     GPIO.setmode(GPIO.BCM)
-
     # Sel all GPIO gauges as input ports.
-    for level in gauges:
-        GPIO.setup(gauges[level], GPIO.IN)
+    for level in range(0, len(GAUGE)-1):
+        GPIO.setup(GAUGE[level], GPIO.IN)
 
 
 def get_level():
-    # Acquire all gauge levels and compute level in percentage
-    percentage = 0
-    for level in range(0, gauges_state.__len__-1):
-        gauges_state[level] = sample(level)
-        if (gauges_state[level] is GPIO.High) and (is_gauge_health(level)):
-            percentage = max(percentage, ((level*gauges_state.__len__)/100)
-
-    return percentage
+    ''' Computes and returns level of water tank in percentage '''
+    level_percent = 0
+    # For each healthy gauge, try to compute level in percent
+    for level in range(0, len(GAUGE)-1):
+        if is_gauge_healthy(level):
+            if GAUGE_STATE[level] is GPIO.HIGH:
+                level_percent = max(level_percent, ((level+1 * GAUGE_STATE.__len__()) / 100))
+    return level_percent
 
 
 def monitor_gauges():
-    pass
+    ''' Checks each gauge against faulty floater '''
+    for level in range(0, len(GAUGE)-1):
+        # Acquire the level of each gauge
+        GAUGE_STATE[level] = sample(level)
+        # For each gauge, check gauge against other gauges (upper/lower)
+        if (GAUGE_STATE[level] is GPIO.LOW) and (level+1 < len(GAUGE)):
+            if (GAUGE_STATE[level+1] is GPIO.HIGH) and (is_gauge_healthy(level+1)):
+                GAUGE_FAULT[level] += 1
+            else:
+                GAUGE_FAULT[level] = 0
+        elif (GAUGE_STATE[level] is GPIO.HIGH) and (level-1 >= 0):
+            if (GAUGE_STATE[level-1] is GPIO.LOW) and (is_gauge_healthy(level-1)):
+                GAUGE_FAULT[level] += 1
+            else:
+                GAUGE_FAULT[level] = 0
+        # Update health of gauges
+        if GAUGE_FAULT[level] == 0:
+            set_gauge_healthy(level)
+        elif GAUGE_FAULT[level] >= WATER_TANK_GAUGE_FAULT_TOLERANCE:
+            set_gauge_unhealthy(level)

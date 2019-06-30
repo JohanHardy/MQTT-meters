@@ -10,3 +10,4 @@ Generic MQTT sensor for meters (water, gaz, electricity)
 * `Python 2.7`
 * `pip install paho-mqtt`
 * `pip install opencv-python`
+* `pip install RPI-GPIO`

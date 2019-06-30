@@ -6,11 +6,12 @@ Author: Johan Hardy
 Email: hardy.johan@gmail.com
 """
 import sys
+import sensors.water.meter
+import sensors.water.tank
 import paho.mqtt.client as mqtt
 
 
 def main():
-    """Entry point of the MQTT meters."""
     for arg in sys.argv[1:]:
         print(arg)
 

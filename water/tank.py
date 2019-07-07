@@ -51,6 +51,7 @@ def sample(level):
 
 def setup():
     ''' Setup Raspberry Pi and its GPIOs for each gauge '''
+    print("Setting up tank meter")
     GPIO.cleanup()
     GPIO.setmode(GPIO.BCM)
     # Sel all GPIO gauges as input ports.

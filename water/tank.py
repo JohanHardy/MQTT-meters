@@ -65,7 +65,7 @@ def get_level():
     for level in range(0, len(GAUGE)-1):
         if is_gauge_healthy(level):
             if GAUGE_STATE[level] is GPIO.HIGH:
-                level_percent = max(level_percent, (level+1 * GAUGE_STATE.__len__()))
+                level_percent = max(level_percent, ((level+1)*(len(GAUGE)/100)*100))
     return level_percent
 
 

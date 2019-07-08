@@ -8,6 +8,7 @@ Email: hardy.johan@gmail.com
 import os
 import time
 import sys
+import json
 import argparse
 import water.meter
 import water.tank
@@ -20,20 +21,19 @@ CLIENT = mqtt.Client()
 
 def _execute_water_tank_activities():
     ''' Execute water tank activities '''
+    payload = {}
     try:
         next_monitoring = time.time()
         while True:
             # Monitor all gauges in the tank
             water.tank.monitor_gauges()
             # Get water level
-            level = water.tank.get_level()
-            # Send level telemetry to MQTT broker
-            CLIENT.publish(config.MQTT_TOPIC_WATER_TANK + "/level", level, 1)
+            payload['level'] = water.tank.get_level()
             # Get gauge healthes
             gauge_health = water.tank.get_gauges_health()
-            for level in len(gauge_health)-1:
-                CLIENT.publish(config.MQTT_TOPIC_WATER_TANK + "/gauge" + level+1 + "/health",
-                               gauge_health[level], 1)
+
+            # Send telemetry to MQTT broker
+            CLIENT.publish(config.MQTT_TOPIC_WATER_TANK, json.dumps(payload), 1)
             # Wait for next cycles
             next_monitoring += config.MQTT_INTERVAL_WATER_TANK
             sleep_time = next_monitoring - time.time()
@@ -63,8 +63,7 @@ def main():
     print("Starting MQTT client {}:{} keepalive {}".format(args["host"],
                                                            args["port"],
                                                            args["keep"]))
-    # CLIENT.username_pw_set(ACCESS_TOKEN)
-    CLIENT.connect(args["host"], args["port"], args["keep"])
+    CLIENT.connect(args["host"], int(args["port"]), int(args["keep"]))
     CLIENT.loop_start()
     # Initialise and start meter activities
     if args["meter"] == 'tank':

@@ -13,8 +13,8 @@ import RPi.GPIO as GPIO
 
 # Table mapping the water gauges (10 GPIOS = 10 levels = 100%)
 GAUGE = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]  # GPIO IDs are TBD
-# Water gauge health status (Healthy = True, Unhealthy = False)
-GAUGE_HEALTH = [True]*10
+# Water gauge health status (healthy or unhealthy)
+GAUGE_HEALTH = ['healthy']*10
 # Water gauge state (GPIO.HIGH = water presence, GPIO.LOW = no water presence)
 GAUGE_STATE = [GPIO.LOW]*10
 # Water gauge fault counter
@@ -25,17 +25,17 @@ WATER_TANK_GAUGE_FAULT_TOLERANCE = 3
 
 def set_gauge_unhealthy(level):
     ''' Set a gauge unhealthy '''
-    GAUGE_HEALTH[level] = False
+    GAUGE_HEALTH[level] = 'unhealthy'
 
 
 def set_gauge_healthy(level):
     ''' Set a gauge healthy '''
-    GAUGE_HEALTH[level] = True
+    GAUGE_HEALTH[level] = 'healthy'
 
 
 def is_gauge_healthy(level):
     ''' Check whether a gauge is healthy or not '''
-    return bool(GAUGE_HEALTH[level] is True)
+    return bool(GAUGE_HEALTH[level] == 'healthy')
 
 
 def get_gauges_health():
@@ -55,15 +55,15 @@ def setup():
     GPIO.cleanup()
     GPIO.setmode(GPIO.BCM)
     # Sel all GPIO gauges as input ports.
-    for level in range(0, len(GAUGE)-1):
-        GPIO.setup(GAUGE[level], GPIO.IN)
+    for gpio in GAUGE:
+        GPIO.setup(gpio, GPIO.IN)
 
 
 def get_level():
     ''' Computes and returns level of water tank in percentage '''
     level_percent = 0
     # For each healthy gauge, try to compute level in percent
-    for level in range(0, len(GAUGE)-1):
+    for level in range(0, len(GAUGE)):
         if is_gauge_healthy(level):
             if GAUGE_STATE[level] is GPIO.HIGH:
                 level_percent = max(level_percent, ((level+1)*(len(GAUGE)/100)*100))
@@ -72,7 +72,7 @@ def get_level():
 
 def monitor_gauges():
     ''' Checks each gauge against faulty floater '''
-    for level in range(0, len(GAUGE)-1):
+    for level in range(0, len(GAUGE)):
         # Acquire the level of each gauge
         GAUGE_STATE[level] = sample(level)
         # For each gauge, check gauge against other gauges (upper/lower)

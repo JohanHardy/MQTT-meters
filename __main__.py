@@ -31,7 +31,8 @@ def _execute_water_tank_activities():
             payload['level'] = water.tank.get_level()
             # Get gauge healthes
             gauge_health = water.tank.get_gauges_health()
-
+            for level in range(0, len(gauge_health)):
+                payload['gauge'+str(level+1)] = gauge_health[level]
             # Send telemetry to MQTT broker
             CLIENT.publish(config.MQTT_TOPIC_WATER_TANK, json.dumps(payload), 1)
             # Wait for next cycles

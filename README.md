@@ -14,4 +14,4 @@ Generic MQTT sensor for meters (water, gaz, electricity)
 
 # Water Tank
 
-![Node-Red Flow](https://raw.github.com/JohanHardy/MQTT-meters/master/Node-Red_waterTank.png)
+![Node-Red Flow](https://raw.github.com/JohanHardy/MQTT-meters/master/water/Node-Red_waterTank.png)

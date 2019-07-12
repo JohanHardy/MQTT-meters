@@ -11,3 +11,7 @@ Generic MQTT sensor for meters (water, gaz, electricity)
 * `pip install paho-mqtt`
 * `pip install opencv-python`
 * `pip install RPI-GPIO`
+
+# Water Tank
+
+![Node-Red Flow](https://raw.github.com/JohanHardy/MQTT-meters/master/Node-Red_waterTank.png)

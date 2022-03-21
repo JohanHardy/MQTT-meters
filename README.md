@@ -1,7 +1,5 @@
 # MQTT-meters
-Generic MQTT sensor for meters (water, gaz, electricity)
-
-![Overview](https://raw.github.com/JohanHardy/MQTT-meters/master/overview.png)
+MQTT sensor for water level in tank.
 
 # Requirements
 * `Raspberry Pi 3 model B+`

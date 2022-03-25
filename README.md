@@ -1,17 +1,16 @@
 # MQTT-meters
-Generic MQTT sensor for meters (water, gaz, electricity)
-
-![Overview](https://raw.github.com/JohanHardy/MQTT-meters/master/overview.png)
+MQTT sensor for water level in tank.
 
 # Requirements
-* `Raspberry Pi 3 model B+`
-* `Raspberry Pi Camera Module v2`
-* `Raspberry Pi PoE HAT`
+
 * `Python 2.7`
 * `pip install paho-mqtt`
 * `pip install opencv-python`
 * `pip install RPI-GPIO`
 
-# Water Tank
+# Hardware
 
-![Node-Red Flow](https://raw.github.com/JohanHardy/MQTT-meters/master/water/Node-Red_waterTank.png)
+* `Raspberry Pi 3 model B+`
+* `Raspberry Pi PoE HAT`
+* `5V Ultrasonc Module to measure the water level in a tank`
+

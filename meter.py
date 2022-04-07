@@ -3,6 +3,7 @@
 import time
 import RPi.GPIO as GPIO
 import config
+import statistics
 
 def __measure():
   '''This function measures a distance'''
@@ -29,14 +30,13 @@ def __measure():
 
 def measure():
     '''Make 10 measurements'''
-    distance = 0
+    distance = []
     for x in range(10):
-        distance += __measure()
+        distance.append(__measure())
         time.sleep(0.1)
     
     # Compute average
-    distance = distance / 10
-    return distance
+    return statistics.mean(distance)
 
 def setup():
   '''setup meter'''

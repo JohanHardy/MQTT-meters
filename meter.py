@@ -6,16 +6,20 @@ import config
 
 def __measure():
   '''This function measures a distance'''
-  GPIO.output(GPIO_TRIGGER, True)
+  # Speed of sound in cm/s at temperature celsius
+  temperature = 15
+  speedSound = 33100 + (0.6*temperature)
+
+  GPIO.output(config.GPIO_TRIGGER, True)
   # Wait 10us
   time.sleep(0.00001)
-  GPIO.output(GPIO_TRIGGER, False)
+  GPIO.output(config.GPIO_TRIGGER, False)
   start = time.time()
   
-  while GPIO.input(GPIO_ECHO)==0:
+  while GPIO.input(config.GPIO_ECHO)==0:
     start = time.time()
 
-  while GPIO.input(GPIO_ECHO)==1:
+  while GPIO.input(config.GPIO_ECHO)==1:
     stop = time.time()
 
   elapsed = stop-start
@@ -25,6 +29,7 @@ def __measure():
 
 def measure():
     '''Make 10 measurements'''
+    distance = 0
     for x in range(10):
         distance += __measure()
         time.sleep(0.1)
@@ -33,25 +38,21 @@ def measure():
     distance = distance / 10
     return distance
 
-def setup
+def setup():
   '''setup meter'''
   # Use BCM GPIO references
   # instead of physical pin numbers
   GPIO.setmode(GPIO.BCM)
   
-  # Speed of sound in cm/s at temperature celsius
-  temperature = 15
-  speedSound = 33100 + (0.6*temperature)
-  
   # Set pins as output and input
-  GPIO.setup(GPIO_TRIGGER,GPIO.OUT)  # Trigger
-  GPIO.setup(GPIO_ECHO,GPIO.IN)      # Echo
+  GPIO.setup(config.GPIO_TRIGGER,GPIO.OUT)  # Trigger
+  GPIO.setup(config.GPIO_ECHO,GPIO.IN)      # Echo
   
   # Set trigger to False (Low)
-  GPIO.output(GPIO_TRIGGER, False)
+  GPIO.output(config.GPIO_TRIGGER, False)
   
   # Allow module to settle
   time.sleep(0.5)
 
-def terminate
+def terminate():
   GPIO.cleanup()

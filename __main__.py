@@ -25,6 +25,7 @@ def _execute_water_tank_activities():
         while True:
             # Get water level
             payload['level'] = meter.measure()
+            print("Measure: {} cm".format(payload['level']))
             # Send telemetry to MQTT broker
             CLIENT.publish(config.MQTT_TOPIC_WATER_TANK, json.dumps(payload), 1)
             # Wait for next cycles
@@ -36,6 +37,9 @@ def _execute_water_tank_activities():
         pass
     CLIENT.loop_stop()
     CLIENT.disconnect()
+
+def on_log(client, userdata, level, buf):
+    print("log: ",buf)
 
 def main():
     ''' Construct the argument parser and parse the arguments '''
@@ -54,7 +58,9 @@ def main():
                                                            args["port"],
                                                            args["keep"]))
     CLIENT.connect(args["host"], int(args["port"]), int(args["keep"]))
-    CLIENT.loop_start()
+    #CLIENT.username_pw_set("myusername", "aeNg8aibai0oiloo7xiad1iaju1uch")
+    #CLIENT.on_log=on_log
+    #CLIENT.loop_start()
     
     # Initialise and start meter activities
     meter.setup()

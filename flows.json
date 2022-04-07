@@ -1,0 +1,110 @@
+[
+    {
+        "id": "ebbdfd41.bc1418",
+        "type": "tab",
+        "label": "watertank",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "e4d90ff4.4aa58",
+        "type": "mqtt in",
+        "z": "ebbdfd41.bc1418",
+        "name": "sensors/water/tank",
+        "topic": "sensors/water/tank",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "775c5a6d.2f6964",
+        "nl": false,
+        "rap": true,
+        "rh": "0",
+        "inputs": 0,
+        "x": 170,
+        "y": 60,
+        "wires": [
+            [
+                "a782cce1.6c342",
+                "f42c4f80.bcf12"
+            ]
+        ]
+    },
+    {
+        "id": "a782cce1.6c342",
+        "type": "debug",
+        "z": "ebbdfd41.bc1418",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 490,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "f42c4f80.bcf12",
+        "type": "json",
+        "z": "ebbdfd41.bc1418",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": true,
+        "x": 370,
+        "y": 180,
+        "wires": [
+            [
+                "bbcaa426.059fb8"
+            ]
+        ]
+    },
+    {
+        "id": "bbcaa426.059fb8",
+        "type": "function",
+        "z": "ebbdfd41.bc1418",
+        "name": "tank level",
+        "func": "measure = {}\nmeasure.payload = {\n    level: msg.payload.level\n}\nreturn measure;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "775c5a6d.2f6964",
+        "type": "mqtt-broker",
+        "name": "HOME-DD01",
+        "broker": "192.168.0.103",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "5",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    }
+]

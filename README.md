@@ -2,6 +2,7 @@
 MQTT sensor for water level in tank.
 
 ![](overview.jpg)
+![](nodered.png)
 
 # Requirements
 
@@ -17,7 +18,3 @@ MQTT sensor for water level in tank.
 
 ![](circuit.png)
 ![](module.jpg)
-
-![](nodered.jpg)
-
-

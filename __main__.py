@@ -20,21 +20,11 @@ CLIENT = mqtt.Client()
 def _execute_water_tank_activities():
     ''' Execute water tank activities '''
     payload = {}
-    try:
-        next_monitoring = time.time()
-        while True:
-            # Get water level
-            payload['level'] = meter.measure()
-            print("Measure: {} cm".format(payload['level']))
-            # Send telemetry to MQTT broker
-            CLIENT.publish(config.MQTT_TOPIC_WATER_TANK, json.dumps(payload), 1)
-            # Wait for next cycles
-            next_monitoring += config.MQTT_INTERVAL_WATER_TANK
-            sleep_time = next_monitoring - time.time()
-            if sleep_time > 0:
-                time.sleep(sleep_time)
-    except KeyboardInterrupt:
-        pass
+    # Get water level
+    payload['level'] = meter.measure()
+    print("Measure: {} cm".format(payload['level']))
+    # Send telemetry to MQTT broker
+    CLIENT.publish(config.MQTT_TOPIC_WATER_TANK, json.dumps(payload), 1)
     CLIENT.loop_stop()
     CLIENT.disconnect()
 

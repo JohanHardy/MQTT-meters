@@ -36,7 +36,7 @@ def measure():
         time.sleep(0.1)
     
     # Compute average
-    return statistics.mean(distance)
+    return statistics.median(distance)
 
 def setup():
   '''setup meter'''
